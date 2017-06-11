@@ -2,7 +2,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
-#include <nrf.h>
+#include "nrf.h"
 #include <SPI.h>
 
 /* This driver reads raw data from the BNO055
@@ -124,18 +124,21 @@ void loop(void)
 //  Serial.print("\t\t");
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   nrfSendArr(0,(int)(10*euler.x()),(int)(10*euler.y()),(int)(10*euler.z()));
+  //Serial.println("euler");
 //  nrfSend(euler.x());
 //  nrfSend(euler.y());
 //  nrfSend(euler.z());
 
   imu::Vector<3> accelerometer = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
   nrfSendArr(1,(int)(10*accelerometer.x()),(int)(10*accelerometer.y()),(int)(10*accelerometer.z()));
+  //Serial.println("accel");
 //  nrfSend(accelerometer.x());
 //  nrfSend(accelerometer.y());
 //  nrfSend(accelerometer.z());
 
   imu::Vector<3> gyroscope = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
   nrfSendArr(2,(int)(10*gyroscope.x()),(int)(10*gyroscope.y()),(int)(10*gyroscope.z()));
+  //Serial.println("gyro");
 //  nrfSend(gyroscope.x());
 //  nrfSend(gyroscope.y());
 //  nrfSend(gyroscope.z());
@@ -143,6 +146,7 @@ void loop(void)
 
   imu::Vector<3> magnetometer = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
   nrfSendArr(3,(int)(10*magnetometer.x()),(int)(10*magnetometer.y()),(int)(10*magnetometer.z()));
+  //Serial.println("mag");
 //  nrfSend(magnetometer.x());
 //  nrfSend(magnetometer.y());
 //  nrfSend(magnetometer.z());
@@ -150,10 +154,11 @@ void loop(void)
   uint8_t system, gyro, accel, mag = 0;
   bno.getCalibration(&system, &gyro, &accel, &mag);
   nrfSendArr(4,(int)(system),(int)(gyro),(int)(accel));
-  nrfSend(system);
-  nrfSend(gyro);
-  nrfSend(accel);
-  nrfSend(mag);
+  //nrfSend(system);
+  //nrfSend(gyro);
+  //nrfSend(accel);
+  //nrfSend(mag);
+  //Serial.println("sys");
 /*
   // Quaternion data
   imu::Quaternion quat = bno.getQuat();
@@ -296,17 +301,21 @@ void nrfSend(float datatx){
   float2Byte(datatx,bytetoss);
   nrfFillTx(bytetoss,4);
   digitalWrite(CE, HIGH);
+  while(nrfRead(7,1)&0x20!=0x20){}
+  nrfWrite(7,0x20);
   delay(10);
   digitalWrite(CE, LOW);
 }
 
 void nrfSendArr(int id, int x, int y, int z)
 {
-  nrfWrite(7, 0x20);
+  //nrfWrite(7, 0x20);
   uint8_t sendArray[8] = {(id&0xFF00)>>8, id&0xFF, (x&0xFF00)>>8, x&0xFF, (y&0xFF00)>>8, y&0xFF, (z&0xFF00)>>8, z&0xFF};
   nrfFillTx(sendArray, 8);
   digitalWrite(CE, HIGH);
-  delay(10); 
+  while(nrfRead(7,1)&0x20!=0x20){}
+  nrfWrite(7,0x20);
+  delay(8); 
   digitalWrite(CE, LOW);
 }
 
