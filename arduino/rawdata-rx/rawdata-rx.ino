@@ -10,7 +10,24 @@ float refloat;
 int tempx;
 int tempy;
 int tempz;
-
+int tempw;
+int ox;
+int oy;
+int oz;
+int ax;
+int ay;
+int az;
+int gx;
+int gy;
+int gz;
+int mx;
+int my;
+int mz;
+int sc;
+int gc;
+int ac;
+int mc;
+uint8_t rxcount;
 
 void setup() {
   datarx[0]=0;
@@ -44,7 +61,7 @@ void setup() {
   nrfWrite(FLUSH_RX,0); //clear rx fifo
   nrfRead(6,1); 
   nrfWrite(7,0x40);
-  nrfWrite(0x11,8);
+  nrfWrite(0x11,10);
   nrfRead(0x17,1);
   nrfRead(0,1);
   digitalWrite(CE, HIGH);
@@ -52,9 +69,14 @@ void setup() {
 
 void loop() {
   delay(10);
-  if((nrfReadq(NRF_STATUS,1)[0]&(1<<RX_DR))==(1<<RX_DR)||
-     ((nrfReadq(FIFO_STATUS,1)[1]&0x01)==1)){
+  if(((nrfReadq(NRF_STATUS,1)[0]&(1<<RX_DR))==(1<<RX_DR))||
+     ((nrfReadq(FIFO_STATUS,1)[0]&0x02)==0x02) ||
+     ((nrfReadq(FIFO_STATUS,1)[0]&0x01)==0x01)){
+      if(((nrfReadq(FIFO_STATUS,1)[0]&0x02)==0x02)){
+        //Serial.println("FIFO FUL");
+      }
     uint8_t a = nrfReadq(R_RX_PL_WID,1)[0];
+   // Serial.println(a);
     if(a > 32) {  
       nrfWrite(FLUSH_RX,0);
     }
@@ -64,37 +86,111 @@ void loop() {
     tempx = (datarx[2]<<8)+datarx[3];
     tempy = (datarx[4]<<8)+datarx[5];
     tempz = (datarx[6]<<8)+datarx[7];
-    if(datarx[1]<4){
-      if(datarx[1]==1){
-        Serial.print("ACCELEROMETER:");   
+    tempw = (datarx[8]<<8)+datarx[9];
+    if(datarx[1]<=16){
+      if(datarx[1]==2){ 
+        ax = tempx;
+        ay = tempy;
+        az = tempz;  
+        if((rxcount&2)==2){
+          rxcount = 2;
+        }else{
+          rxcount |= 2;
+        }
       }
-      if(datarx[1]==2){
-        Serial.print("GYROSCOPE: ");   
+      if(datarx[1]==4){
+         
+        gx = tempx;
+        gy = tempy;
+        gz = tempz;
+        if((rxcount&4)==4){
+          rxcount = 4;
+        }else{
+          rxcount |= 4;
+        }   
       }
-      if(datarx[1]==3){
-        Serial.print("MAGNETOMETER: ");   
+      if(datarx[1]==8){
+        
+        mx = tempx;
+        my = tempy;
+        mz = tempz;
+        if((rxcount&8)==8){
+          rxcount = 8;
+        }else{
+          rxcount |= 8;
+        }   
       }
-      if(datarx[1]==0){
-        Serial.print("ORIENTATION: ");   
+      if(datarx[1]==1){ 
+        ox = tempx;
+        oy = tempy;
+        oz = tempz;
+        if((rxcount&1)==1){
+          rxcount = 1;
+        }else{
+          rxcount |= 1;
+        }   
+      }
+      if(datarx[1]==16){
+        sc = tempx;
+        gc = tempy;
+        ac = tempz;
+        mc = tempw;
+        if((rxcount&16)==16){
+          rxcount = 16;
+        }else{
+          rxcount |= 16;
+        }       
       }
       //Serial.print("X: ");
-      Serial.print(tempx);
+//      Serial.print(tempx);
+//      Serial.print(":");
+//      Serial.print(tempy);
+//      Serial.print(":");
+//      Serial.print(tempz);
+//      Serial.print("/");
+    }
+    //Serial.println(rxcount);
+    if(rxcount == 31){
+
+      Serial.print("ORIENTATION: ");
+      Serial.print(ox, DEC);
       Serial.print(":");
-      Serial.print(tempy);
+      Serial.print(oy, DEC);
       Serial.print(":");
-      Serial.print(tempz);
+      Serial.print(oz, DEC);
       Serial.print("/");
-    }else{
+      Serial.print("ACCELEROMETER:");
+      Serial.print(ax, DEC);
+      Serial.print(":");
+      Serial.print(ay, DEC);
+      Serial.print(":");
+      Serial.print(az, DEC);
+      Serial.print("/");
+      Serial.print("GYROSCOPE: ");
+      Serial.print(gx, DEC);
+      Serial.print(":");
+      Serial.print(gy, DEC);
+      Serial.print(":");
+      Serial.print(gz, DEC);
+      Serial.print("/");
+      Serial.print("MAGNETOMETER: "); 
+      Serial.print(mx, DEC);
+      Serial.print(":");
+      Serial.print(my, DEC);
+      Serial.print(":");
+      Serial.print(mz, DEC);
+      Serial.print("/");
       Serial.print("CALIBRATION:");
-      Serial.print(tempx, DEC);
+      Serial.print(sc, DEC);
       Serial.print(":");
-      Serial.print(tempy, DEC);
+      Serial.print(gc, DEC);
       Serial.print(":");
-      Serial.print(tempz, DEC);
-      //Serial.print(" Mag=");
-      //Serial.println(mag, DEC);
+      Serial.print(ac, DEC);
+      Serial.print(":");
+      Serial.print(mc, DEC);
       Serial.println("/");
     }
+   
     //delay(10);
     //byte2Float(datarx);
     //Serial.println(refloat);
@@ -118,6 +214,10 @@ void loop() {
     }*/
     //nrfRead(7,1);
   }
+    //nrfRead(0x17,1);
+      if(((nrfReadq(FIFO_STATUS,1)[0]&0x02)==0x02)){
+        //Serial.println("FIFO FULL");
+      }
 }
 
 uint8_t *nrfReadq(unsigned char address, unsigned char numBy){

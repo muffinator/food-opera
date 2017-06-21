@@ -21,6 +21,7 @@
 
 /* Set the delay between fresh samples */
 #define BNO055_SAMPLERATE_DELAY_MS (100)
+#define M 10
 
 Adafruit_BNO055 bno = Adafruit_BNO055();
 
@@ -122,22 +123,23 @@ void loop(void)
 //  Serial.print(" Z: ");
 //  Serial.print(euler.z());
 //  Serial.print("\t\t");
+
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  nrfSendArr(0,(int)(10*euler.x()),(int)(10*euler.y()),(int)(10*euler.z()));
+  nrfSendArr(1,(int)(M*euler.x()),(int)(M*euler.y()),(int)(M*euler.z()),0);
   //Serial.println("euler");
 //  nrfSend(euler.x());
 //  nrfSend(euler.y());
 //  nrfSend(euler.z());
 
   imu::Vector<3> accelerometer = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
-  nrfSendArr(1,(int)(10*accelerometer.x()),(int)(10*accelerometer.y()),(int)(10*accelerometer.z()));
+  nrfSendArr(2,(int)(M*accelerometer.x()),(int)(M*accelerometer.y()),(int)(M*accelerometer.z()),0);
   //Serial.println("accel");
 //  nrfSend(accelerometer.x());
 //  nrfSend(accelerometer.y());
 //  nrfSend(accelerometer.z());
 
   imu::Vector<3> gyroscope = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-  nrfSendArr(2,(int)(10*gyroscope.x()),(int)(10*gyroscope.y()),(int)(10*gyroscope.z()));
+  nrfSendArr(4,(int)(M*gyroscope.x()),(int)(M*gyroscope.y()),(int)(M*gyroscope.z()),0);
   //Serial.println("gyro");
 //  nrfSend(gyroscope.x());
 //  nrfSend(gyroscope.y());
@@ -145,7 +147,7 @@ void loop(void)
 
 
   imu::Vector<3> magnetometer = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
-  nrfSendArr(3,(int)(10*magnetometer.x()),(int)(10*magnetometer.y()),(int)(10*magnetometer.z()));
+  nrfSendArr(8,(int)(M*magnetometer.x()),(int)(M*magnetometer.y()),(int)(M*magnetometer.z()),0);
   //Serial.println("mag");
 //  nrfSend(magnetometer.x());
 //  nrfSend(magnetometer.y());
@@ -153,7 +155,7 @@ void loop(void)
 
   uint8_t system, gyro, accel, mag = 0;
   bno.getCalibration(&system, &gyro, &accel, &mag);
-  nrfSendArr(4,(int)(system),(int)(gyro),(int)(accel));
+  nrfSendArr(16,(int)(system),(int)(gyro),(int)(accel),(int)(mag));
   //nrfSend(system);
   //nrfSend(gyro);
   //nrfSend(accel);
@@ -215,7 +217,7 @@ void loop(void)
 //  Serial.print(accel, DEC);
 //  Serial.print(" Mag=");
 //  Serial.println(mag, DEC);
-delay(100);
+delay(10);
   if((nrfRead(7,1)&0x10)==0x10){
     nrfWrite(7,0x10);
     nrfWrite(FLUSH_TX,0);
@@ -307,11 +309,11 @@ void nrfSend(float datatx){
   digitalWrite(CE, LOW);
 }
 
-void nrfSendArr(int id, int x, int y, int z)
+void nrfSendArr(int id, int x, int y, int z, int w)
 {
   //nrfWrite(7, 0x20);
-  uint8_t sendArray[8] = {(id&0xFF00)>>8, id&0xFF, (x&0xFF00)>>8, x&0xFF, (y&0xFF00)>>8, y&0xFF, (z&0xFF00)>>8, z&0xFF};
-  nrfFillTx(sendArray, 8);
+  uint8_t sendArray[10] = {(id&0xFF00)>>8, id&0xFF, (x&0xFF00)>>8, x&0xFF, (y&0xFF00)>>8, y&0xFF, (z&0xFF00)>>8, z&0xFF, (w&0xFF00)>>8, w&0xFF};
+  nrfFillTx(sendArray, 10);
   digitalWrite(CE, HIGH);
   while(nrfRead(7,1)&0x20!=0x20){}
   nrfWrite(7,0x20);

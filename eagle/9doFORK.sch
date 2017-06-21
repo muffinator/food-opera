@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.2.1">
+<eagle version="8.2.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -28,10 +28,10 @@
 <layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
 <layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="no"/>
 <layer number="20" name="Dimension" color="15" fill="1" visible="no" active="no"/>
-<layer number="21" name="tPlace" color="14" fill="1" visible="no" active="no"/>
-<layer number="22" name="bPlace" color="13" fill="1" visible="no" active="no"/>
-<layer number="23" name="tOrigins" color="14" fill="1" visible="no" active="no"/>
-<layer number="24" name="bOrigins" color="13" fill="1" visible="no" active="no"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="no"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="no"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="no"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="no"/>
 <layer number="25" name="tNames" color="7" fill="1" visible="no" active="no"/>
 <layer number="26" name="bNames" color="7" fill="1" visible="no" active="no"/>
 <layer number="27" name="tValues" color="7" fill="1" visible="no" active="no"/>
@@ -3749,6 +3749,129 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 </deviceset>
 </devicesets>
 </library>
+<library name="con-samtec" urn="urn:adsk.eagle:library:184">
+<description>&lt;b&gt;Samtec Connectors&lt;/b&gt;&lt;p&gt;
+&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
+<packages>
+<package name="TSW-106-02-S-S" library_version="1">
+<description>&lt;b&gt;THROUGH-HOLE .025" SQ POST HEADER&lt;/b&gt;&lt;p&gt;
+Source: Samtec TSW.pdf</description>
+<wire x1="-7.749" y1="1.155" x2="7.749" y2="1.155" width="0.2032" layer="21"/>
+<wire x1="7.749" y1="1.155" x2="7.749" y2="-1.155" width="0.2032" layer="21"/>
+<wire x1="7.749" y1="-1.155" x2="-7.749" y2="-1.155" width="0.2032" layer="21"/>
+<wire x1="-7.749" y1="-1.155" x2="-7.749" y2="1.155" width="0.2032" layer="21"/>
+<pad name="1" x="6.35" y="0" drill="1" diameter="1.5" shape="octagon" rot="R180"/>
+<pad name="2" x="3.81" y="0" drill="1" diameter="1.5" shape="octagon" rot="R180"/>
+<pad name="3" x="1.27" y="0" drill="1" diameter="1.5" shape="octagon" rot="R180"/>
+<pad name="4" x="-1.27" y="0" drill="1" diameter="1.5" shape="octagon" rot="R180"/>
+<pad name="5" x="-3.81" y="0" drill="1" diameter="1.5" shape="octagon" rot="R180"/>
+<pad name="6" x="-6.35" y="0" drill="1" diameter="1.5" shape="octagon" rot="R180"/>
+<text x="6.092" y="-2.498" size="1.1" layer="21" font="vector" rot="SR0">1</text>
+<text x="-8.255" y="-1.27" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="9.525" y="-1.27" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
+<rectangle x1="-6.7" y1="-0.35" x2="-6" y2="0.35" layer="51"/>
+<rectangle x1="-4.16" y1="-0.35" x2="-3.46" y2="0.35" layer="51"/>
+<rectangle x1="-1.62" y1="-0.35" x2="-0.92" y2="0.35" layer="51"/>
+<rectangle x1="0.92" y1="-0.35" x2="1.62" y2="0.35" layer="51"/>
+<rectangle x1="3.46" y1="-0.35" x2="4.16" y2="0.35" layer="51"/>
+<rectangle x1="6" y1="-0.35" x2="6.7" y2="0.35" layer="51"/>
+</package>
+<package name="TSW-106-02-S-S-RA" library_version="1">
+<description>&lt;b&gt;THROUGH-HOLE .025" SQ POST HEADER&lt;/b&gt;&lt;p&gt;
+Source: Samtec TSW.pdf</description>
+<wire x1="-7.749" y1="-2.046" x2="7.749" y2="-2.046" width="0.2032" layer="21"/>
+<wire x1="7.749" y1="-2.046" x2="7.749" y2="-0.106" width="0.2032" layer="21"/>
+<wire x1="7.749" y1="-0.106" x2="-7.749" y2="-0.106" width="0.2032" layer="21"/>
+<wire x1="-7.749" y1="-0.106" x2="-7.749" y2="-2.046" width="0.2032" layer="21"/>
+<pad name="1" x="6.35" y="1.524" drill="1" diameter="1.5" shape="octagon" rot="R180"/>
+<pad name="2" x="3.81" y="1.524" drill="1" diameter="1.5" shape="octagon" rot="R180"/>
+<pad name="3" x="1.27" y="1.524" drill="1" diameter="1.5" shape="octagon" rot="R180"/>
+<pad name="4" x="-1.27" y="1.524" drill="1" diameter="1.5" shape="octagon" rot="R180"/>
+<pad name="5" x="-3.81" y="1.524" drill="1" diameter="1.5" shape="octagon" rot="R180"/>
+<pad name="6" x="-6.35" y="1.524" drill="1" diameter="1.5" shape="octagon" rot="R180"/>
+<text x="-8.255" y="-7.62" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="9.525" y="-7.62" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
+<text x="7.632" y="1.152" size="1.1" layer="21" font="vector" rot="SR0">1</text>
+<rectangle x1="-6.604" y1="0" x2="-6.096" y2="1.778" layer="51"/>
+<rectangle x1="-4.064" y1="0" x2="-3.556" y2="1.778" layer="51"/>
+<rectangle x1="-1.524" y1="0" x2="-1.016" y2="1.778" layer="51"/>
+<rectangle x1="1.016" y1="0" x2="1.524" y2="1.778" layer="51"/>
+<rectangle x1="3.556" y1="0" x2="4.064" y2="1.778" layer="51"/>
+<rectangle x1="6.096" y1="0" x2="6.604" y2="1.778" layer="51"/>
+<rectangle x1="-6.604" y1="-7.89" x2="-6.096" y2="-2.04" layer="21"/>
+<rectangle x1="-4.064" y1="-7.89" x2="-3.556" y2="-2.04" layer="21"/>
+<rectangle x1="-1.524" y1="-7.89" x2="-1.016" y2="-2.04" layer="21"/>
+<rectangle x1="1.016" y1="-7.89" x2="1.524" y2="-2.04" layer="21"/>
+<rectangle x1="3.556" y1="-7.89" x2="4.064" y2="-2.04" layer="21"/>
+<rectangle x1="6.096" y1="-7.89" x2="6.604" y2="-2.04" layer="21"/>
+</package>
+</packages>
+<symbols>
+<symbol name="MPINV" library_version="1">
+<text x="-1.27" y="1.27" size="1.778" layer="96">&gt;VALUE</text>
+<text x="2.54" y="-0.762" size="1.524" layer="95">&gt;NAME</text>
+<rectangle x1="0" y1="-0.254" x2="1.778" y2="0.254" layer="94"/>
+<pin name="1" x="-2.54" y="0" visible="off" length="short" direction="pas"/>
+</symbol>
+<symbol name="MPIN" library_version="1">
+<text x="2.54" y="-0.762" size="1.524" layer="95">&gt;NAME</text>
+<rectangle x1="0" y1="-0.254" x2="1.778" y2="0.254" layer="94"/>
+<pin name="1" x="-2.54" y="0" visible="off" length="short" direction="pas"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="TSW-106-02-S-S" prefix="X" library_version="1">
+<description>&lt;b&gt;THROUGH-HOLE .025" SQ POST HEADER&lt;/b&gt;&lt;p&gt;
+Source: Samtec TSW.pdf</description>
+<gates>
+<gate name="-1" symbol="MPINV" x="-1.27" y="5.08" addlevel="always"/>
+<gate name="-2" symbol="MPIN" x="-1.27" y="2.54" addlevel="always"/>
+<gate name="-3" symbol="MPIN" x="-1.27" y="0" addlevel="always"/>
+<gate name="-4" symbol="MPIN" x="-1.27" y="-2.54" addlevel="always"/>
+<gate name="-5" symbol="MPIN" x="-1.27" y="-5.08" addlevel="always"/>
+<gate name="-6" symbol="MPIN" x="-1.27" y="-7.62" addlevel="always"/>
+</gates>
+<devices>
+<device name="" package="TSW-106-02-S-S">
+<connects>
+<connect gate="-1" pin="1" pad="1"/>
+<connect gate="-2" pin="1" pad="2"/>
+<connect gate="-3" pin="1" pad="3"/>
+<connect gate="-4" pin="1" pad="4"/>
+<connect gate="-5" pin="1" pad="5"/>
+<connect gate="-6" pin="1" pad="6"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="MF" value="" constant="no"/>
+<attribute name="MPN" value="" constant="no"/>
+<attribute name="OC_FARNELL" value="unknown" constant="no"/>
+<attribute name="OC_NEWARK" value="unknown" constant="no"/>
+</technology>
+</technologies>
+</device>
+<device name="-RA" package="TSW-106-02-S-S-RA">
+<connects>
+<connect gate="-1" pin="1" pad="1"/>
+<connect gate="-2" pin="1" pad="2"/>
+<connect gate="-3" pin="1" pad="3"/>
+<connect gate="-4" pin="1" pad="4"/>
+<connect gate="-5" pin="1" pad="5"/>
+<connect gate="-6" pin="1" pad="6"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="MF" value="" constant="no"/>
+<attribute name="MPN" value="" constant="no"/>
+<attribute name="OC_FARNELL" value="unknown" constant="no"/>
+<attribute name="OC_NEWARK" value="unknown" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -3760,45 +3883,45 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 </classes>
 <parts>
 <part name="U$2" library="microbuilder" deviceset="BNO055" device="" value="BNO055"/>
-<part name="R3" library="microbuilder" deviceset="RESISTOR" device="0805_NOOUTLINE" value="10K"/>
-<part name="R4" library="microbuilder" deviceset="RESISTOR" device="0805_NOOUTLINE" value="10K"/>
-<part name="R5" library="microbuilder" deviceset="RESISTOR" device="0805_NOOUTLINE" value="10K"/>
+<part name="R3" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="10K"/>
+<part name="R4" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="10K"/>
+<part name="R5" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="10K"/>
 <part name="U$7" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$8" library="microbuilder" deviceset="GND" device=""/>
 <part name="Y1" library="microbuilder" deviceset="CRYSTAL" device="8.0X3.8" value="32.768kHz"/>
-<part name="C1" library="microbuilder" deviceset="CAP_CERAMIC" device="0805-NOOUTLINE" value="22pF"/>
-<part name="C2" library="microbuilder" deviceset="CAP_CERAMIC" device="0805-NOOUTLINE" value="22pF"/>
+<part name="C1" library="microbuilder" deviceset="CAP_CERAMIC" device="_0603" value="22pF"/>
+<part name="C2" library="microbuilder" deviceset="CAP_CERAMIC" device="_0603" value="22pF"/>
 <part name="U$11" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$12" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$13" library="microbuilder" deviceset="GND" device=""/>
-<part name="C3" library="microbuilder" deviceset="CAP_CERAMIC" device="0805-NOOUTLINE" value="0.1uF"/>
+<part name="C3" library="microbuilder" deviceset="CAP_CERAMIC" device="0603MINI" value="0.1uF"/>
 <part name="U$14" library="microbuilder" deviceset="GND" device=""/>
-<part name="C4" library="microbuilder" deviceset="CAP_CERAMIC" device="0805_10MGAP" value="0.1uF"/>
+<part name="C4" library="microbuilder" deviceset="CAP_CERAMIC" device="_0603" value="0.1uF"/>
 <part name="U$16" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$5" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$6" library="microbuilder" deviceset="GND" device=""/>
 <part name="+3V3" library="microbuilder" deviceset="3.3V" device="" value="+3v3"/>
 <part name="U$15" library="microbuilder" deviceset="3.3V" device="" value="+3V3"/>
 <part name="C7" library="microbuilder" deviceset="CAP_CERAMIC" device="0805-NOOUTLINE" value="10µF"/>
-<part name="C8" library="microbuilder" deviceset="CAP_CERAMIC" device="0603_NO" value="1uF"/>
+<part name="C8" library="microbuilder" deviceset="CAP_CERAMIC" device="0603MINI" value="1uF"/>
 <part name="U$27" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$28" library="microbuilder" deviceset="GND" device=""/>
 <part name="C9" library="microbuilder" deviceset="CAP_CERAMIC" device="0805-NOOUTLINE" value="10µF"/>
 <part name="U$29" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$30" library="microbuilder" deviceset="GND" device=""/>
-<part name="R1" library="microbuilder" deviceset="RESISTOR" device="_0603_NOOUT" value="22"/>
-<part name="R2" library="microbuilder" deviceset="RESISTOR" device="_0603_NOOUT" value="22"/>
+<part name="R1" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="22"/>
+<part name="R2" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="22"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
 <part name="C10" library="microbuilder" deviceset="CAP_CERAMIC" device="0805-NOOUTLINE" value="10uF"/>
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
-<part name="L" library="microbuilder" deviceset="LED" device="0805_NOOUTLINE" value="RED"/>
+<part name="L" library="microbuilder" deviceset="LED" device="0805" value="RED"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="IC1" library="microbuilder" deviceset="ATMEGA32U4" device="-MU" value="ATMEGA32U4-MU"/>
 <part name="C14" library="microbuilder" deviceset="CAP_CERAMIC" device="0603_NO" value="1uF"/>
-<part name="R7" library="microbuilder" deviceset="RESISTOR" device="_0603_NOOUT" value="2.2K"/>
+<part name="R7" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="2.2K"/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
 <part name="SW1" library="adafruit" deviceset="SPST_TACT" device="-KMR2"/>
 <part name="+3V4" library="supply1" deviceset="+3V3" device=""/>
@@ -3821,22 +3944,22 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 <part name="U$17" library="microbuilder" deviceset="GND" device=""/>
 <part name="U3" library="microbuilder" deviceset="MCP73831/2" device="" value="MCP73831T-2ACI/OT"/>
 <part name="CHG" library="microbuilder" deviceset="LED" device="0805_NOOUTLINE" value="ORANGE"/>
-<part name="R6" library="microbuilder" deviceset="RESISTOR" device="_0603_NOOUT" value="1K"/>
+<part name="R6" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="1K"/>
 <part name="C11" library="microbuilder" deviceset="CAP_CERAMIC" device="0805-NOOUTLINE" value="10µF"/>
 <part name="U$33" library="microbuilder" deviceset="GND" device=""/>
-<part name="R8" library="microbuilder" deviceset="RESISTOR" device="_0603_NOOUT" value="10K\"/>
+<part name="R8" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="10K\"/>
 <part name="U$36" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$38" library="microbuilder" deviceset="VBUS" device=""/>
 <part name="U$39" library="microbuilder" deviceset="VBAT" device=""/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
-<part name="R9" library="microbuilder" deviceset="RESISTOR" device="_0603_NOOUT" value="100k"/>
-<part name="R10" library="microbuilder" deviceset="RESISTOR" device="_0603MP" value="100K"/>
+<part name="R9" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="100k"/>
+<part name="R10" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="100K"/>
 <part name="U$18" library="microbuilder" deviceset="VBAT" device=""/>
 <part name="GND13" library="supply1" deviceset="GND" device=""/>
-<part name="R11" library="microbuilder" deviceset="RESISTOR" device="_0603_NOOUT" value="100k"/>
-<part name="R12" library="microbuilder" deviceset="RESISTOR" device="_0603_NOOUT" value="10k"/>
-<part name="R13" library="microbuilder" deviceset="RESISTOR" device="_0603_NOOUT" value="10k"/>
-<part name="R14" library="microbuilder" deviceset="RESISTOR" device="_0603_NOOUT" value="10k"/>
+<part name="R11" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="100k"/>
+<part name="R12" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="10k"/>
+<part name="R13" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="10k"/>
+<part name="R14" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="10k"/>
 <part name="U$31" library="microbuilder" deviceset="3.3V" device="" value="+3v3"/>
 <part name="U$32" library="microbuilder" deviceset="3.3V" device="" value="+3v3"/>
 <part name="U$34" library="microbuilder" deviceset="3.3V" device="" value="+3v3"/>
@@ -3846,6 +3969,9 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
 <part name="JP3" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device=""/>
 <part name="JP1" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device=""/>
+<part name="X1" library="con-samtec" library_urn="urn:adsk.eagle:library:184" deviceset="TSW-106-02-S-S" device=""/>
+<part name="R15" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="10k"/>
+<part name="R16" library="microbuilder" deviceset="RESISTOR" device="0603MINI" value="10k"/>
 </parts>
 <sheets>
 <sheet>
@@ -3960,6 +4086,14 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 <instance part="GND9" gate="1" x="223.52" y="25.4"/>
 <instance part="JP3" gate="G$1" x="104.14" y="167.64"/>
 <instance part="JP1" gate="G$1" x="104.14" y="165.1"/>
+<instance part="X1" gate="-1" x="273.05" y="193.04"/>
+<instance part="X1" gate="-2" x="273.05" y="190.5"/>
+<instance part="X1" gate="-3" x="273.05" y="187.96"/>
+<instance part="X1" gate="-4" x="273.05" y="185.42"/>
+<instance part="X1" gate="-5" x="273.05" y="182.88"/>
+<instance part="X1" gate="-6" x="273.05" y="180.34"/>
+<instance part="R15" gate="G$1" x="182.88" y="48.26" rot="R270"/>
+<instance part="R16" gate="G$1" x="182.88" y="38.1" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -4328,6 +4462,11 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 <wire x1="238.76" y1="106.68" x2="226.06" y2="106.68" width="0.1524" layer="91"/>
 <label x="226.06" y="106.68" size="1.778" layer="95"/>
 </segment>
+<segment>
+<wire x1="177.8" y1="38.1" x2="177.8" y2="33.02" width="0.1524" layer="91"/>
+<pinref part="R16" gate="G$1" pin="2"/>
+<wire x1="177.8" y1="33.02" x2="182.88" y2="33.02" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="N$11" class="0">
 <segment>
@@ -4346,9 +4485,12 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 </net>
 <net name="A5" class="0">
 <segment>
-<wire x1="256.54" y1="193.04" x2="271.78" y2="193.04" width="0.1524" layer="91"/>
+<wire x1="256.54" y1="193.04" x2="270.51" y2="193.04" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="G$1" pin="PF0(ADC0)"/>
 <label x="259.08" y="193.04" size="1.778" layer="95"/>
+<pinref part="X1" gate="-1" pin="1"/>
+<wire x1="270.51" y1="193.04" x2="271.78" y2="193.04" width="0.1524" layer="91"/>
+<junction x="270.51" y="193.04"/>
 </segment>
 <segment>
 <wire x1="223.52" y1="83.82" x2="238.76" y2="83.82" width="0.1524" layer="91"/>
@@ -4357,9 +4499,12 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 </net>
 <net name="A4" class="0">
 <segment>
-<wire x1="256.54" y1="190.5" x2="271.78" y2="190.5" width="0.1524" layer="91"/>
+<wire x1="256.54" y1="190.5" x2="270.51" y2="190.5" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="G$1" pin="PF1(ADC1)"/>
 <label x="259.08" y="190.5" size="1.778" layer="95"/>
+<pinref part="X1" gate="-2" pin="1"/>
+<wire x1="270.51" y1="190.5" x2="271.78" y2="190.5" width="0.1524" layer="91"/>
+<junction x="270.51" y="190.5"/>
 </segment>
 <segment>
 <wire x1="238.76" y1="86.36" x2="223.52" y2="86.36" width="0.1524" layer="91"/>
@@ -4368,9 +4513,12 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 </net>
 <net name="A3" class="0">
 <segment>
-<wire x1="256.54" y1="187.96" x2="271.78" y2="187.96" width="0.1524" layer="91"/>
+<wire x1="256.54" y1="187.96" x2="270.51" y2="187.96" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="G$1" pin="PF4(ADC4/TCK)"/>
 <label x="259.08" y="187.96" size="1.778" layer="95"/>
+<pinref part="X1" gate="-3" pin="1"/>
+<wire x1="270.51" y1="187.96" x2="271.78" y2="187.96" width="0.1524" layer="91"/>
+<junction x="270.51" y="187.96"/>
 </segment>
 <segment>
 <wire x1="223.52" y1="88.9" x2="238.76" y2="88.9" width="0.1524" layer="91"/>
@@ -4379,9 +4527,12 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 </net>
 <net name="A2" class="0">
 <segment>
-<wire x1="256.54" y1="185.42" x2="271.78" y2="185.42" width="0.1524" layer="91"/>
+<wire x1="256.54" y1="185.42" x2="270.51" y2="185.42" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="G$1" pin="PF5(ADC5/TMS)"/>
 <label x="259.08" y="185.42" size="1.778" layer="95"/>
+<pinref part="X1" gate="-4" pin="1"/>
+<wire x1="270.51" y1="185.42" x2="271.78" y2="185.42" width="0.1524" layer="91"/>
+<junction x="270.51" y="185.42"/>
 </segment>
 <segment>
 <wire x1="238.76" y1="91.44" x2="223.52" y2="91.44" width="0.1524" layer="91"/>
@@ -4390,9 +4541,12 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 </net>
 <net name="A1" class="0">
 <segment>
-<wire x1="256.54" y1="182.88" x2="271.78" y2="182.88" width="0.1524" layer="91"/>
+<wire x1="256.54" y1="182.88" x2="270.51" y2="182.88" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="G$1" pin="PF6(ADC6/TDO)"/>
 <label x="259.08" y="182.88" size="1.778" layer="95"/>
+<pinref part="X1" gate="-5" pin="1"/>
+<wire x1="270.51" y1="182.88" x2="271.78" y2="182.88" width="0.1524" layer="91"/>
+<junction x="270.51" y="182.88"/>
 </segment>
 <segment>
 <wire x1="223.52" y1="93.98" x2="238.76" y2="93.98" width="0.1524" layer="91"/>
@@ -4663,9 +4817,12 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 </net>
 <net name="A0" class="0">
 <segment>
-<wire x1="256.54" y1="180.34" x2="271.78" y2="180.34" width="0.1524" layer="91"/>
+<wire x1="256.54" y1="180.34" x2="270.51" y2="180.34" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="G$1" pin="PF7(ADC7(TDI)"/>
 <label x="259.08" y="180.34" size="1.778" layer="95"/>
+<pinref part="X1" gate="-6" pin="1"/>
+<wire x1="270.51" y1="180.34" x2="271.78" y2="180.34" width="0.1524" layer="91"/>
+<junction x="270.51" y="180.34"/>
 </segment>
 <segment>
 <wire x1="238.76" y1="96.52" x2="223.52" y2="96.52" width="0.1524" layer="91"/>
@@ -4711,25 +4868,11 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 <wire x1="101.6" y1="114.3" x2="106.68" y2="114.3" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="D4" class="0">
-<segment>
-<wire x1="256.54" y1="129.54" x2="271.78" y2="129.54" width="0.1524" layer="91"/>
-<pinref part="IC1" gate="G$1" pin="PD4(ICP1/ADC8)"/>
-<label x="259.08" y="129.54" size="1.778" layer="95"/>
-</segment>
-</net>
 <net name="D8" class="0">
 <segment>
 <wire x1="256.54" y1="152.4" x2="271.78" y2="152.4" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="G$1" pin="PB4(ADC11)"/>
 <label x="259.08" y="152.4" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="D7" class="0">
-<segment>
-<wire x1="256.54" y1="172.72" x2="271.78" y2="172.72" width="0.1524" layer="91"/>
-<label x="259.08" y="172.72" size="1.778" layer="95"/>
-<pinref part="IC1" gate="G$1" pin="PE6(INT.6/AIN0)"/>
 </segment>
 </net>
 <net name="EN" class="0">
@@ -4755,17 +4898,12 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 <label x="160.02" y="83.82" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="256.54" y1="167.64" x2="271.78" y2="167.64" width="0.1524" layer="91"/>
-<pinref part="IC1" gate="G$1" pin="PC6(OC3A/!OC4A)"/>
-<label x="259.08" y="167.64" size="1.778" layer="95"/>
+<wire x1="256.54" y1="172.72" x2="271.78" y2="172.72" width="0.1524" layer="91"/>
+<label x="259.08" y="172.72" size="1.778" layer="95"/>
+<pinref part="IC1" gate="G$1" pin="PE6(INT.6/AIN0)"/>
 </segment>
 </net>
 <net name="IRQ" class="0">
-<segment>
-<pinref part="JP2" gate="A" pin="8"/>
-<wire x1="205.74" y1="43.18" x2="195.58" y2="43.18" width="0.1524" layer="91"/>
-<label x="191.008" y="43.18" size="1.778" layer="95"/>
-</segment>
 <segment>
 <wire x1="238.76" y1="73.66" x2="223.52" y2="73.66" width="0.1524" layer="91"/>
 <label x="223.52" y="73.66" size="1.778" layer="95"/>
@@ -4774,6 +4912,11 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 <pinref part="IC1" gate="G$1" pin="PD2(INT2/RXD1)"/>
 <wire x1="271.78" y1="124.46" x2="256.54" y2="124.46" width="0.1524" layer="91"/>
 <label x="259.08" y="124.46" size="1.778" layer="95"/>
+</segment>
+<segment>
+<wire x1="177.8" y1="48.26" x2="177.8" y2="53.34" width="0.1524" layer="91"/>
+<pinref part="R15" gate="G$1" pin="1"/>
+<wire x1="177.8" y1="53.34" x2="182.88" y2="53.34" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="CSN" class="0">
@@ -4787,9 +4930,18 @@ Small SMD resonator. This is the itty bitty 10/20MHz resonators with built in ca
 <label x="160.02" y="86.36" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="256.54" y1="137.16" x2="271.78" y2="137.16" width="0.1524" layer="91"/>
-<pinref part="IC1" gate="G$1" pin="PD7(OC4D/ADC10/T0)"/>
-<label x="259.08" y="137.16" size="1.778" layer="95"/>
+<pinref part="IC1" gate="G$1" pin="PB0(SS)"/>
+<wire x1="256.54" y1="142.24" x2="271.78" y2="142.24" width="0.1524" layer="91"/>
+<label x="259.08" y="142.24" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="N$13" class="0">
+<segment>
+<pinref part="JP2" gate="A" pin="8"/>
+<wire x1="205.74" y1="43.18" x2="182.88" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="R15" gate="G$1" pin="2"/>
+<junction x="182.88" y="43.18"/>
+<pinref part="R16" gate="G$1" pin="1"/>
 </segment>
 </net>
 </nets>
