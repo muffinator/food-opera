@@ -1,8 +1,8 @@
 #include <SPI.h>
 #include <nrf.h>
+#include <stdio.h>
 
-
-#define VERSION 1
+//#define VERSION 0
 #define CHANNEL 2
 #define BOARD 0
 
@@ -20,14 +20,20 @@
 uint8_t blah[32];
 uint8_t datarx[32];
 float refloat;
+int pipe;
 int tempx, tempy, tempz, tempw;
-int ox, oy, oz;
-int ax, ay, az;
-int gx, gy, gz;
-int mx, my, mz;
-int sc, gc, ac, mc;
-int t0, t1, t2, t3;
-uint8_t rxcount;
+struct dof{
+  int ox, oy, oz;
+  int ax, ay, az;
+  int gx, gy, gz;
+  int mx, my, mz;
+  int sc, gc, ac, mc;
+  int t0, t1, t2, t3;
+  uint8_t rxcount;
+};
+
+struct dof fork[6];
+
 uint8_t rxaddr[5] = {0xA5, 0xA5, 0xA5, 0xA5, 0xA5};
 
 void setup() {
@@ -53,21 +59,33 @@ void setup() {
   nrfWrite(EN_AA,(1<<ENAA_P0)|(1<<ENAA_P1));  // auto ack pipe0,1
   nrfWrite(EN_RXADDR,(1<<ERX_P0)|(1<<ERX_P1));  //enable data pipe 0,1
   nrfWrite(SETUP_AW,(3<<AW));  //5 bite address width
-  nrfWrite(SETUP_RETR,((15)<<ARD)|(5<<ARC));  //default 250uS retx delay, 3x retx
+  nrfWrite(SETUP_RETR,((5)<<ARD)|(5<<ARC));  //default 250uS retx delay, 3x retx
   
   //SET RX ADDRESSES
   rxaddr[0] = 0xA5;
   nrfSetRxAddr(rxaddr,5,0);
-  rxaddr[0] = 0xC3;
+  
+  rxaddr[0] = 0x53;
   nrfSetRxAddr(rxaddr,5,1);
-  rxaddr[0] = 0x92;
-  nrfSetRxAddr(rxaddr,5,2);
+  
+  rxaddr[0] = 0x22;
+  nrfSetRxAddr(rxaddr,1,2);
+
   rxaddr[0] = 0x0F;
-  nrfSetRxAddr(rxaddr,5,3);
+  nrfSetRxAddr(rxaddr,1,3);
+
   rxaddr[0] = 0x4D;
-  nrfSetRxAddr(rxaddr,5,4);
+  nrfSetRxAddr(rxaddr,1,4);
+
   rxaddr[0] = 0xB7;
-  nrfSetRxAddr(rxaddr,5,5);
+  nrfSetRxAddr(rxaddr,1,5);
+  
+  nrfRead(0x0A,5);
+  nrfRead(0x0B,5);
+  nrfRead(0x0C,1);
+  nrfRead(0x0D,1);
+  nrfRead(0x0E,1);
+  nrfRead(0x0F,1);
   
   //SET CHANNEL
   nrfWrite(RF_CH,CHANNEL); 
@@ -116,7 +134,8 @@ void loop() {
     }else{
     //Serial.print(a);
     //delay(10);
-    nrfReadq(0x61,a);
+    pipe = (((nrfReadq(NRF_STATUS,1)[0])&0x0f)>>1);
+    nrfReadq(R_RX_PAYLOAD,a);
     }
     
     tempx = (datarx[2]<<8)+datarx[3];
@@ -126,120 +145,122 @@ void loop() {
     
     if(datarx[1]<=32){
       if(datarx[1]==2){ 
-        ax = tempx;
-        ay = tempy;
-        az = tempz;  
-        if((rxcount&2)==2){
-          rxcount = 2;
+        fork[pipe].ax = tempx;
+        fork[pipe].ay = tempy;
+        fork[pipe].az = tempz;  
+        if((fork[pipe].rxcount&2)==2){
+          fork[pipe].rxcount = 2;
         }else{
-          rxcount |= 2;
+          fork[pipe].rxcount |= 2;
         }
       }
       if(datarx[1]==4){
          
-        gx = tempx;
-        gy = tempy;
-        gz = tempz;
-        if((rxcount&4)==4){
-          rxcount = 4;
+        fork[pipe].gx = tempx;
+        fork[pipe].gy = tempy;
+        fork[pipe].gz = tempz;
+        if((fork[pipe].rxcount&4)==4){
+          fork[pipe].rxcount = 4;
         }else{
-          rxcount |= 4;
+          fork[pipe].rxcount |= 4;
         }   
       }
       if(datarx[1]==8){
         
-        mx = tempx;
-        my = tempy;
-        mz = tempz;
-        if((rxcount&8)==8){
-          rxcount = 8;
+        fork[pipe].mx = tempx;
+        fork[pipe].my = tempy;
+        fork[pipe].mz = tempz;
+        if((fork[pipe].rxcount&8)==8){
+          fork[pipe].rxcount = 8;
         }else{
-          rxcount |= 8;
+          fork[pipe].rxcount |= 8;
         }   
       }
       if(datarx[1]==1){ 
-        ox = tempx;
-        oy = tempy;
-        oz = tempz;
-        if((rxcount&1)==1){
-          rxcount = 1;
+        fork[pipe].ox = tempx;
+        fork[pipe].oy = tempy;
+        fork[pipe].oz = tempz;
+        if((fork[pipe].rxcount&1)==1){
+          fork[pipe].rxcount = 1;
         }else{
-          rxcount |= 1;
+          fork[pipe].rxcount |= 1;
         }   
       }
       if(datarx[1]==16){
-        sc = tempx;
-        gc = tempy;
-        ac = tempz;
-        mc = tempw;
-        if((rxcount&16)==16){
-          rxcount = 16;
+        fork[pipe].sc = tempx;
+        fork[pipe].gc = tempy;
+        fork[pipe].ac = tempz;
+        fork[pipe].mc = tempw;
+        if((fork[pipe].rxcount&16)==16){
+          fork[pipe].rxcount = 16;
         }else{
-          rxcount |= 16;
+          fork[pipe].rxcount |= 16;
         }       
       }
       if(datarx[1]==32){
-        t0 = tempx;
-        t1 = tempy;
-        t2 = tempz;
-        t3 = tempw;
-        if((rxcount&32)==32){
-          rxcount = 32;
+        fork[pipe].t0 = tempx;
+        fork[pipe].t1 = tempy;
+        fork[pipe].t2 = tempz;
+        fork[pipe].t3 = tempw;
+        if((fork[pipe].rxcount&32)==32){
+          fork[pipe].rxcount = 32;
         }else{
-          rxcount |= 32;
+          fork[pipe].rxcount |= 32;
         }       
       }
     }
     //Serial.println(rxcount);
-    if((rxcount&0x1f) == 31){
+    if((fork[pipe].rxcount&0x1f) == 31){
 
       Serial.print("ORIENTATION: ");
-      Serial.print(ox, DEC);
+      Serial.print(fork[pipe].ox, DEC);
       Serial.print(":");
-      Serial.print(oy, DEC);
+      Serial.print(fork[pipe].oy, DEC);
       Serial.print(":");
-      Serial.print(oz, DEC);
+      Serial.print(fork[pipe].oz, DEC);
       Serial.print("/");
       Serial.print("ACCELEROMETER:");
-      Serial.print(ax, DEC);
+      Serial.print(fork[pipe].ax, DEC);
       Serial.print(":");
-      Serial.print(ay, DEC);
+      Serial.print(fork[pipe].ay, DEC);
       Serial.print(":");
-      Serial.print(az, DEC);
+      Serial.print(fork[pipe].az, DEC);
       Serial.print("/");
       Serial.print("GYROSCOPE: ");
-      Serial.print(gx, DEC);
+      Serial.print(fork[pipe].gx, DEC);
       Serial.print(":");
-      Serial.print(gy, DEC);
+      Serial.print(fork[pipe].gy, DEC);
       Serial.print(":");
-      Serial.print(gz, DEC);
+      Serial.print(fork[pipe].gz, DEC);
       Serial.print("/");
       Serial.print("MAGNETOMETER: "); 
-      Serial.print(mx, DEC);
+      Serial.print(fork[pipe].mx, DEC);
       Serial.print(":");
-      Serial.print(my, DEC);
+      Serial.print(fork[pipe].my, DEC);
       Serial.print(":");
-      Serial.print(mz, DEC);
+      Serial.print(fork[pipe].mz, DEC);
       Serial.print("/");
       Serial.print("CALIBRATION:");
-      Serial.print(sc, DEC);
+      Serial.print(fork[pipe].sc, DEC);
       Serial.print(":");
-      Serial.print(gc, DEC);
+      Serial.print(fork[pipe].gc, DEC);
       Serial.print(":");
-      Serial.print(ac, DEC);
+      Serial.print(fork[pipe].ac, DEC);
       Serial.print(":");
-      Serial.print(mc, DEC);
+      Serial.print(fork[pipe].mc, DEC);
       Serial.println("/");
     }
-    if((rxcount&0x20) == 32){
+    if((fork[pipe].rxcount&0x20) == 32){
+      Serial.print("PIPE: ");
+      Serial.print(pipe, DEC);
       Serial.print("TOUCH: ");
-      Serial.print(t0, DEC);
+      Serial.print(fork[pipe].t0, DEC);
       Serial.print(":");
-      Serial.print(t1, DEC);
+      Serial.print(fork[pipe].t1, DEC);
       Serial.print(":");
-      Serial.print(t2, DEC);
+      Serial.print(fork[pipe].t2, DEC);
       Serial.print(":");
-      Serial.print(t3, DEC);
+      Serial.print(fork[pipe].t3, DEC);
       Serial.println("/");
     }
     //delay(10);
@@ -286,7 +307,7 @@ void nrfWriteq(unsigned char address, unsigned char numBytes, unsigned char *dat
 
 void nrfSetRxAddr(uint8_t *data, uint8_t numBytes,uint8_t chan){
   digitalWrite(ssp, LOW);
-  SPI.transfer((10+chan));
+  SPI.transfer(0x20|(10+chan));
   for(char i=0;i<numBytes;i++){
     SPI.transfer(data[i]);
   }
