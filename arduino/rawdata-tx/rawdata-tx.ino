@@ -23,7 +23,7 @@
 /* Set the delay between fresh samples */
 #define VERSION 1
 #define CHANNEL 2
-#define BOARD 0
+#define BOARD 1
 
 
 #define BNO055_SAMPLERATE_DELAY_MS (100)
@@ -74,10 +74,10 @@ void setup(void)
     rxaddr[0] = 0xa5;
   }
   if(BOARD == 1){
-    rxaddr[0] = 0xC3;
+    rxaddr[0] = 0x53;
   }
   if(BOARD == 2){
-    rxaddr[0] = 0x92;
+    rxaddr[0] = 0x22;
   }
   if(BOARD == 3){
     rxaddr[0] = 0x0F;
@@ -122,9 +122,11 @@ void setup(void)
   nrfWrite(EN_AA,(1<<ENAA_P0));  // auto ack pipe0,1
   nrfWrite(EN_RXADDR,(1<<ERX_P0));  //enable data pipe 0,1
   nrfWrite(SETUP_AW,(3<<AW));  //5 bite address width
-  nrfWrite(SETUP_RETR,((15)<<ARD)|(5<<ARC));  //default 250uS retx delay, 4x retx
-  nrfSetRxAddr(rxaddr,5);
+  nrfWrite(SETUP_RETR,((5)<<ARD)|(5<<ARC));  //default 250uS retx delay, 4x retx
+  nrfSetRxAddr(rxaddr,5,0);
   nrfSetTxAddr(rxaddr,5);
+  nrfRead(10,5);
+  nrfRead(0x10,5);
   nrfWrite(5, 2); //channel 2
   nrfWrite(RF_SETUP,(1<<RF_DR_LOW)|(1<<RF_PWR_LOW)|(1<<RF_PWR_HIGH)); //low data rate, low power (0b100000)
   //nrfWrite(0x1c,0x01); //enable dynamic payload data pipe 0
@@ -233,9 +235,9 @@ void nrfFillTx(uint8_t *data, uint8_t numBytes){
   digitalWrite(ssp, HIGH);
 }
 
-void nrfSetRxAddr(uint8_t *data, uint8_t numBytes){
+void nrfSetRxAddr(uint8_t *data, uint8_t numBytes,uint8_t chan){
   digitalWrite(ssp, LOW);
-  SPI.transfer(RX_ADDR_P0);
+  SPI.transfer((0x20|(10+chan)));
   for(char i=0;i<numBytes;i++){
     SPI.transfer(data[i]);
   }
@@ -244,7 +246,7 @@ void nrfSetRxAddr(uint8_t *data, uint8_t numBytes){
 
 void nrfSetTxAddr(uint8_t *data, uint8_t numBytes){
   digitalWrite(ssp, LOW);
-  SPI.transfer(TX_ADDR);
+  SPI.transfer(0x20|TX_ADDR);
   for(char i=0;i<numBytes;i++){
     SPI.transfer(data[i]);
   }
