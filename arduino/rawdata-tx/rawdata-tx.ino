@@ -4,6 +4,7 @@
 #include <utility/imumaths.h>
 #include "nrf.h"
 #include <SPI.h>
+#include <ADCTouch.h>
 
 /* This driver reads raw data from the BNO055
 
@@ -20,18 +21,34 @@
 */
 
 /* Set the delay between fresh samples */
+#define VERSION 1
+#define CHANNEL 2
+#define BOARD 0
+
+
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 #define M 10
 
+
+//    OLD
+#define ssp  6 //CSN
+#define CE  5 //CE
+#ifdef VERSION
+//    NEW
+#define ssp 17 //CSN
+#define CE 11 //CE
+#endif
+
 Adafruit_BNO055 bno = Adafruit_BNO055();
 
-const int ssp = 6; //CSN
-const int CE = 5; //CE
 int inbyte = 0;
 uint8_t test[32];
 uint8_t rxarray[13];
 uint8_t bytetoss[4];
-
+char bnoHere = 1;
+int ref0, ref1, ref2, ref3;
+int val0, val1, val2, val3;
+uint8_t rxaddr[5] = {0xA5, 0xA5, 0xA5, 0xA5, 0xA5};
 
 /**************************************************************************/
 /*
@@ -48,7 +65,30 @@ void setup(void)
   SPI.begin();
   SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0));
   SPI.endTransaction();
+  ref0 = ADCTouch.read(A0, 500);    //create reference values to 
+  ref1 = ADCTouch.read(A1, 500);    //account for the capacitance of the pad
+  ref2 = ADCTouch.read(A2, 500);
+  ref3 = ADCTouch.read(A3, 500);
 
+  if(BOARD == 0){
+    rxaddr[0] = 0xa5;
+  }
+  if(BOARD == 1){
+    rxaddr[0] = 0xC3;
+  }
+  if(BOARD == 2){
+    rxaddr[0] = 0x92;
+  }
+  if(BOARD == 3){
+    rxaddr[0] = 0x0F;
+  }
+  if(BOARD == 4){
+    rxaddr[0] = 0x4D;
+  }
+  if(BOARD == 5){
+    rxaddr[0] = 0xB7;
+  }
+  
   for(uint8_t i=0;i<32;i++){
     test[i]=i;
   }
@@ -61,11 +101,12 @@ void setup(void)
   {
     /* There was a problem detecting the BNO055 ... check your connections */
     Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-    while(1);
+    bnoHere = 0;
   }
 
   delay(1000);
 
+  if(bnoHere){
   /* Display the current temperature */
   int8_t temp = bno.getTemp();
   Serial.print("Current Temperature: ");
@@ -74,15 +115,18 @@ void setup(void)
   Serial.println("");
 
   bno.setExtCrystalUse(true);
-
+  }
+  
   Serial.println("Calibration status values: 0=uncalibrated, 3=fully calibrated");
 
-  nrfWrite(EN_AA,(1<<ENAA_P0));  // auto ack pipe0
-  nrfWrite(EN_RXADDR,(1<<ERX_P0));  //enable data pipe 0
+  nrfWrite(EN_AA,(1<<ENAA_P0));  // auto ack pipe0,1
+  nrfWrite(EN_RXADDR,(1<<ERX_P0));  //enable data pipe 0,1
   nrfWrite(SETUP_AW,(3<<AW));  //5 bite address width
-  nrfWrite(SETUP_RETR,((15)<<ARD)|(5<<ARC));  //default 250uS retx delay, 3x retx
+  nrfWrite(SETUP_RETR,((15)<<ARD)|(5<<ARC));  //default 250uS retx delay, 4x retx
+  nrfSetRxAddr(rxaddr,5);
+  nrfSetTxAddr(rxaddr,5);
   nrfWrite(5, 2); //channel 2
-  nrfWrite(6, 0x20); //low data rate, low power (0b100000)
+  nrfWrite(RF_SETUP,(1<<RF_DR_LOW)|(1<<RF_PWR_LOW)|(1<<RF_PWR_HIGH)); //low data rate, low power (0b100000)
   //nrfWrite(0x1c,0x01); //enable dynamic payload data pipe 0
   //nrfWrite(0x1d,0x06); //enable dynamic payload with ack
   nrfWrite(0, 0x0E); //power on, PTX,2-byte crc
@@ -105,6 +149,7 @@ void setup(void)
 /**************************************************************************/
 void loop(void)
 {
+  if(bnoHere){
   // Possible vector values can be:
   // - VECTOR_ACCELEROMETER - m/s^2
   // - VECTOR_MAGNETOMETER  - uT
@@ -112,55 +157,24 @@ void loop(void)
   // - VECTOR_EULER         - degrees
   // - VECTOR_LINEARACCEL   - m/s^2
   // - VECTOR_GRAVITY       - m/s^2
-  //imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-
-//  /* Display the floating point data */
-//  Serial.print("ORIENTATION: ");
-//  Serial.print("X: ");
-//  Serial.print(euler.x());
-//  Serial.print(" Y: ");
-//  Serial.print(euler.y());
-//  Serial.print(" Z: ");
-//  Serial.print(euler.z());
-//  Serial.print("\t\t");
 
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   nrfSendArr(1,(int)(M*euler.x()),(int)(M*euler.y()),(int)(M*euler.z()),0);
-  //Serial.println("euler");
-//  nrfSend(euler.x());
-//  nrfSend(euler.y());
-//  nrfSend(euler.z());
-
+  
   imu::Vector<3> accelerometer = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
   nrfSendArr(2,(int)(M*accelerometer.x()),(int)(M*accelerometer.y()),(int)(M*accelerometer.z()),0);
-  //Serial.println("accel");
-//  nrfSend(accelerometer.x());
-//  nrfSend(accelerometer.y());
-//  nrfSend(accelerometer.z());
 
   imu::Vector<3> gyroscope = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
   nrfSendArr(4,(int)(M*gyroscope.x()),(int)(M*gyroscope.y()),(int)(M*gyroscope.z()),0);
-  //Serial.println("gyro");
-//  nrfSend(gyroscope.x());
-//  nrfSend(gyroscope.y());
-//  nrfSend(gyroscope.z());
 
 
   imu::Vector<3> magnetometer = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
   nrfSendArr(8,(int)(M*magnetometer.x()),(int)(M*magnetometer.y()),(int)(M*magnetometer.z()),0);
-  //Serial.println("mag");
-//  nrfSend(magnetometer.x());
-//  nrfSend(magnetometer.y());
-//  nrfSend(magnetometer.z());
 
   uint8_t system, gyro, accel, mag = 0;
   bno.getCalibration(&system, &gyro, &accel, &mag);
   nrfSendArr(16,(int)(system),(int)(gyro),(int)(accel),(int)(mag));
-  //nrfSend(system);
-  //nrfSend(gyro);
-  //nrfSend(accel);
-  //nrfSend(mag);
-  //Serial.println("sys");
+  
 /*
   // Quaternion data
   imu::Quaternion quat = bno.getQuat();
@@ -175,48 +189,12 @@ void loop(void)
   Serial.print("\t\t");
   */
 
-//  imu::Vector<3> accelerometer = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
-//  Serial.print("ACCELEROMETER: ");
-//  Serial.print("X: ");
-//  Serial.print(accelerometer.x());
-//  Serial.print(" Y: ");
-//  Serial.print(accelerometer.y());
-//  Serial.print(" Z: ");
-//  Serial.print(accelerometer.z());
-//  Serial.print("\t\t");
-//
-//  
-//  imu::Vector<3> gyroscope = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-//  Serial.print("GYROSCOPE: ");
-//  Serial.print("X: ");
-//  Serial.print(gyroscope.x());
-//  Serial.print(" Y: ");
-//  Serial.print(gyroscope.y());
-//  Serial.print(" Z: ");
-//  Serial.print(gyroscope.z());
-//  Serial.print("\t\t");
-//  
-//  imu::Vector<3> magnetometer = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
-//  Serial.print("MAGNETOMETER: ");
-//  Serial.print("X: ");
-//  Serial.print(magnetometer.x());
-//  Serial.print(" Y: ");
-//  Serial.print(magnetometer.y());
-//  Serial.print(" Z: ");
-//  Serial.print(magnetometer.z());
-//  Serial.print("\t\t");
-//  
-//  /* Display calibration status for each sensor. */
-//  uint8_t system, gyro, accel, mag = 0;
-//  bno.getCalibration(&system, &gyro, &accel, &mag);
-//  Serial.print("CALIBRATION: Sys=");
-//  Serial.print(system, DEC);
-//  Serial.print(" Gyro=");
-//  Serial.print(gyro, DEC);
-//  Serial.print(" Accel=");
-//  Serial.print(accel, DEC);
-//  Serial.print(" Mag=");
-//  Serial.println(mag, DEC);
+  }
+    val0 = ADCTouch.read(A0);
+    val1 = ADCTouch.read(A1);
+    val2 = ADCTouch.read(A2);
+    val3 = ADCTouch.read(A3);
+    nrfSendArr(32,(int)(val0),(int)(val1),(int)(val2),(int)(val3));
 delay(10);
   if((nrfRead(7,1)&0x10)==0x10){
     nrfWrite(7,0x10);
@@ -236,7 +214,7 @@ delay(10);
 //  digitalWrite(CE, LOW);
 //  nrfRead(0x17, 1);
 //  nrfRead(7, 1);
- delay(BNO055_SAMPLERATE_DELAY_MS/5);
+ //delay(BNO055_SAMPLERATE_DELAY_MS/5);
 }
 
 void nrfFillTx(uint8_t data){
@@ -249,6 +227,24 @@ void nrfFillTx(uint8_t data){
 void nrfFillTx(uint8_t *data, uint8_t numBytes){
   digitalWrite(ssp, LOW);
   SPI.transfer(0xa0);
+  for(char i=0;i<numBytes;i++){
+    SPI.transfer(data[i]);
+  }
+  digitalWrite(ssp, HIGH);
+}
+
+void nrfSetRxAddr(uint8_t *data, uint8_t numBytes){
+  digitalWrite(ssp, LOW);
+  SPI.transfer(RX_ADDR_P0);
+  for(char i=0;i<numBytes;i++){
+    SPI.transfer(data[i]);
+  }
+  digitalWrite(ssp, HIGH);
+}
+
+void nrfSetTxAddr(uint8_t *data, uint8_t numBytes){
+  digitalWrite(ssp, LOW);
+  SPI.transfer(TX_ADDR);
   for(char i=0;i<numBytes;i++){
     SPI.transfer(data[i]);
   }
@@ -317,7 +313,7 @@ void nrfSendArr(int id, int x, int y, int z, int w)
   digitalWrite(CE, HIGH);
   while(nrfRead(7,1)&0x20!=0x20){}
   nrfWrite(7,0x20);
-  delay(8); 
+  delay(9); 
   digitalWrite(CE, LOW);
 }
 
