@@ -2,8 +2,8 @@
 #include <nrf.h>
 #include <stdio.h>
 
-//#define VERSION 0
-#define CHANNEL 2
+//#define VERSION 1  //comment this line if you are programming a version 0 board.uncomment for v1
+#define CHANNEL 2    //(1-127)for each Reciever board, use a different channel spaced well.
 #define BOARD 0
 
 //    OLD
@@ -211,7 +211,9 @@ void loop() {
     }
     //Serial.println(rxcount);
     if((fork[pipe].rxcount&0x1f) == 31){
-
+      Serial.print("PIPE: ");
+      Serial.print(pipe, DEC);
+      Serial.print("/");
       Serial.print("ORIENTATION: ");
       Serial.print(fork[pipe].ox, DEC);
       Serial.print(":");
@@ -253,6 +255,7 @@ void loop() {
     if((fork[pipe].rxcount&0x20) == 32){
       Serial.print("PIPE: ");
       Serial.print(pipe, DEC);
+      Serial.print("/");
       Serial.print("TOUCH: ");
       Serial.print(fork[pipe].t0, DEC);
       Serial.print(":");
@@ -289,6 +292,14 @@ void loop() {
       }
       //Serial.println("fee fi fo fum");
 }
+
+
+
+///////////////////////////////////////////////////////
+//  Below are functions for talking to the NRF module//
+///////////////////////////////////////////////////////
+
+
 
 uint8_t *nrfReadq(unsigned char address, unsigned char numBy){
   digitalWrite(ssp, LOW);
