@@ -5,26 +5,31 @@
 #include "nrf.h"
 #include <SPI.h>
 #include <ADCTouch.h>
+#include "FastLED.h"
 
-/* This driver reads raw data from the BNO055
+//////////////////////////
+//-------CONFIG---------//
+//////////////////////////
 
-   Connections
-   ===========
-   Connect SCL to analog 5
-   Connect SDA to analog 4
-   Connect VDD to 3.3V DC
-   Connect GROUND to common ground
-
-   History
-   =======
-   2015/MAR/03  - First release (KTOWN)
-*/
-
-/* Set the delay between fresh samples */
 #define VERSION 1
 #define CHANNEL 2
-#define BOARD 1
+#define BOARD 0
+#define ENABLE_DRINKING 0
+#define ENABLE_WAITER 0
 
+//////////////////////////
+//-------the rest-------//
+//////////////////////////
+
+FASTLED_USING_NAMESPACE
+#define DATA_PIN    A5
+#define LED_TYPE    WS2811
+#define COLOR_ORDER GRB
+#define NUM_LEDS    1
+CRGB leds[NUM_LEDS];
+
+#define BRIGHTNESS          96
+#define FRAMES_PER_SECOND  120
 
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 #define M 10
@@ -48,6 +53,12 @@ uint8_t bytetoss[4];
 char bnoHere = 1;
 int ref0, ref1, ref2, ref3;
 int val0, val1, val2, val3;
+int del0, del1, del2, del3;
+int count;
+char drank=0;
+char waiter=0;
+char slow;
+char r,g,b;
 uint8_t rxaddr[5] = {0xA5, 0xA5, 0xA5, 0xA5, 0xA5};
 
 /**************************************************************************/
@@ -57,6 +68,14 @@ uint8_t rxaddr[5] = {0xA5, 0xA5, 0xA5, 0xA5, 0xA5};
 /**************************************************************************/
 void setup(void)
 {
+  pinMode(A4, OUTPUT);
+  pinMode(A3, OUTPUT);
+  pinMode(A2, OUTPUT);
+  digitalWrite(A4, HIGH);
+  digitalWrite(A2, LOW);
+  FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.setBrightness(BRIGHTNESS);
+  
   pinMode(ssp, OUTPUT);
   pinMode(CE, OUTPUT);
   pinMode(12, INPUT_PULLUP);
@@ -69,7 +88,11 @@ void setup(void)
   ref1 = ADCTouch.read(A1, 500);    //account for the capacitance of the pad
   ref2 = ADCTouch.read(A2, 500);
   ref3 = ADCTouch.read(A3, 500);
-
+  val0 = ref0;
+  val1 = ref1;
+  val2 = ref2;
+  val3 = ref3;
+ 
   if(BOARD == 0){
     rxaddr[0] = 0xa5;
   }
@@ -192,12 +215,83 @@ void loop(void)
   */
 
   }
-    val0 = ADCTouch.read(A0);
-    val1 = ADCTouch.read(A1);
-    val2 = ADCTouch.read(A2);
-    val3 = ADCTouch.read(A3);
+  
+  ////////////////////////////////
+  //--------touch stuff---------//
+  ////////////////////////////////
+  
+    del0 = ADCTouch.read(A0,22)-val0;
+    val0 = del0+val0; //add old val to delta to get new val
+    del1 = ADCTouch.read(A1,22)-val1;
+    val1 = del1+val1; //add old val to delta to get new val
+    del2 = ADCTouch.read(A2,22)-val2;
+    val2 = del2+val2; //add old val to delta to get new val
+    del3 = ADCTouch.read(A3,22)-val3;
+    val3 = del3+val3; //add old val to delta to get new val
     nrfSendArr(32,(int)(val0),(int)(val1),(int)(val2),(int)(val3));
-delay(10);
+
+  ///////////////////////////////
+  //--------LED stuff----------//
+  ///////////////////////////////
+  
+//pin 0 - watching for water to touch someone's lips.
+  if(ENABLE_DRINKING){
+    int threshold = 200;
+    if (del0 > threshold) {
+      leds[0].r = 255;
+      leds[0].g = 255;
+      leds[0].b = 255;
+      drank = 1;
+    }
+    if (del0 < -1*threshold) {
+      drank = 2;
+    }
+    
+    if(drank==2&&leds[0].r>0){
+      leds[0].r = max(leds[0].r-4,0);
+      leds[0].g = max(leds[0].g-4,0);
+      leds[0].b = max(leds[0].b-4,0);
+      if(leds[0].r==0){
+        drank=0;
+      }
+    }
+  }
+//pin 2 - the waiter's release
+  if(ENABLE_WAITER){
+    threshold = 500;
+    if(val2 > threshold){
+      count++;
+    }else{
+      count = 0;
+    }
+    if(count > 200){
+      waiter = 1;
+    }
+    if((waiter == 1) && (count==0)){
+      leds[0].r = min(leds[0].r+4,255);
+      leds[0].b = min(leds[0].b+8,255);
+      if(leds[0].b >= 255){
+        waiter = 2;
+      }
+    }
+    if(waiter == 2){
+      slow++;
+      if(slow == 10){
+        leds[0].r = max(leds[0].r-1,0);
+        leds[0].b = max(leds[0].b-2,0);
+        if(leds[0].b <= 0){
+          waiter=0;
+        }
+        slow = 0;
+      }
+    }
+  }
+    FastLED.show();
+
+// end LED stuff
+
+
+    delay(10);
   if((nrfRead(7,1)&0x10)==0x10){
     nrfWrite(7,0x10);
     nrfWrite(FLUSH_TX,0);
@@ -216,7 +310,7 @@ delay(10);
 //  digitalWrite(CE, LOW);
 //  nrfRead(0x17, 1);
 //  nrfRead(7, 1);
- //delay(BNO055_SAMPLERATE_DELAY_MS/5);
+ delay(BNO055_SAMPLERATE_DELAY_MS/5);
 }
 
 void nrfFillTx(uint8_t data){
