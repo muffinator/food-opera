@@ -56,8 +56,9 @@ void setup() {
   SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0));
   SPI.endTransaction();
 
-  nrfWrite(EN_AA,(1<<ENAA_P0)|(1<<ENAA_P1));  // auto ack pipe0,1
-  nrfWrite(EN_RXADDR,(1<<ERX_P0)|(1<<ERX_P1));  //enable data pipe 0,1
+  nrfWrite(EN_AA,(1<<ENAA_P0)|(1<<ENAA_P1)|(1<<ENAA_P2)|(1<<ENAA_P3)|(1<<ENAA_P4)|(1<<ENAA_P5));  // auto ack pipe0,1
+  nrfWrite(EN_RXADDR,(1<<ERX_P0)|(1<<ERX_P1)|(1<<ERX_P2)|(1<<ERX_P3)|(1<<ERX_P4)|(1<<ERX_P5));  //enable data pipe 0,1
+  nrfRead(EN_RXADDR,1);
   nrfWrite(SETUP_AW,(3<<AW));  //5 bite address width
   nrfWrite(SETUP_RETR,((5)<<ARD)|(5<<ARC));  //default 250uS retx delay, 3x retx
   
