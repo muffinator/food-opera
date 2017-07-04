@@ -60,6 +60,7 @@ char waiter=0;
 char slow;
 char r,g,b;
 uint8_t rxaddr[5] = {0xA5, 0xA5, 0xA5, 0xA5, 0xA5};
+int threshold = 200;
 
 /**************************************************************************/
 /*
@@ -236,7 +237,7 @@ void loop(void)
   
 //pin 0 - watching for water to touch someone's lips.
   if(ENABLE_DRINKING){
-    int threshold = 200;
+    threshold = 200;
     if (del0 > threshold) {
       leds[0].r = 255;
       leds[0].g = 255;
