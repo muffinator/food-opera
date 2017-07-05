@@ -151,7 +151,7 @@ void setup(void)
   nrfSetTxAddr(rxaddr,5);
   nrfRead(10,5);
   nrfRead(0x10,5);
-  nrfWrite(5, 2); //channel 2
+  nrfWrite(5, CHANNEL); //channel 2
   nrfWrite(RF_SETUP,(1<<RF_DR_LOW)|(1<<RF_PWR_LOW)|(1<<RF_PWR_HIGH)); //low data rate, low power (0b100000)
   //nrfWrite(0x1c,0x01); //enable dynamic payload data pipe 0
   //nrfWrite(0x1d,0x06); //enable dynamic payload with ack
