@@ -12,10 +12,10 @@
 //////////////////////////
 
 #define VERSION 1
-#define CHANNEL 2
-#define BOARD 0
-#define ENABLE_DRINKING 1
-#define ENABLE_WAITER 1
+#define CHANNEL 100
+#define BOARD 2
+#define ENABLE_DRINKING 0
+#define ENABLE_WAITER 0
 
 //////////////////////////
 //-------the rest-------//
@@ -262,7 +262,7 @@ void loop(void)
       }
     }
 
-    //previous accomplished as follows...
+    //previously accomplished as follows...
     //if(drank==2&&leds[0].r>0){
     if(drank==2&&anyLightsOn){
       for (int led = 0; led < NUM_LEDS; led++) {
@@ -326,17 +326,18 @@ void loop(void)
     delay(1);
     digitalWrite(CE, LOW);
   }
-//  nrfWrite(7, 0x20);
-//  nrfRead(7, 1);
-//  nrfFillTx(test,4);
-//  nrfRead(0x17, 1);
-//  nrfRead(OBSERVE_TX,1);
-//  digitalWrite(CE, HIGH);
-//  delay(1);
-//  digitalWrite(CE, LOW);
-//  nrfRead(0x17, 1);
-//  nrfRead(7, 1);
- delay(BNO055_SAMPLERATE_DELAY_MS/5);
+  //  nrfWrite(7, 0x20);
+  //  nrfRead(7, 1);
+  //  nrfFillTx(test,4);
+  //  nrfRead(0x17, 1);
+  //  nrfRead(OBSERVE_TX,1);
+  //  digitalWrite(CE, HIGH);
+  //  delay(1);
+  //  digitalWrite(CE, LOW);
+  //  nrfRead(0x17, 1);
+  //  nrfRead(7, 1);
+  delay(BNO055_SAMPLERATE_DELAY_MS/5);
+  delay(47);
 }
 
 void nrfFillTx(uint8_t data){
