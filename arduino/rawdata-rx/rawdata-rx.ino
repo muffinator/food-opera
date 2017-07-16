@@ -2,7 +2,7 @@
 #include <nrf.h>
 #include <stdio.h>
 
-//#define VERSION 1  //comment this line if you are programming a version 0 board.uncomment for v1
+#define VERSION 1  //comment this line if you are programming a version 0 board.uncomment for v1
 #define CHANNEL 2    //(1-127)for each Reciever board, use a different channel spaced well.
 #define BOARD 0
 
