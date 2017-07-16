@@ -12,8 +12,8 @@
 //////////////////////////
 
 #define VERSION 1
-#define CHANNEL 2
-#define BOARD 0
+#define CHANNEL 100
+#define BOARD 2
 #define ENABLE_DRINKING 0
 #define ENABLE_WAITER 0
 
@@ -25,7 +25,7 @@ FASTLED_USING_NAMESPACE
 #define DATA_PIN    A5
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
-#define NUM_LEDS    1
+#define NUM_LEDS    12
 CRGB leds[NUM_LEDS];
 
 #define BRIGHTNESS          96
@@ -239,22 +239,43 @@ void loop(void)
   if(ENABLE_DRINKING){
     threshold = 200;
     if (del0 > threshold) {
-      leds[0].r = 255;
-      leds[0].g = 255;
-      leds[0].b = 255;
+      for (int led = 0; led < NUM_LEDS; led++) {
+        //float brightnessPercent = (float)led/NUM_LEDS;
+        leds[led].r = 10;
+        leds[led].g = 100;
+        leds[led].b = 255;
+      }
       drank = 1;
     }
     if (del0 < -1*threshold) {
       drank = 2;
     }
-    
-    if(drank==2&&leds[0].r>0){
-      leds[0].r = max(leds[0].r-4,0);
-      leds[0].g = max(leds[0].g-4,0);
-      leds[0].b = max(leds[0].b-4,0);
+
+    //perhaps there is a better way to do this, but this seems functional and safe for now!
+    bool anyLightsOn = false;
+    for (int led = 0; led < NUM_LEDS; led++) {
+      if (leds[led].r > 0 || leds[led].g > 0 || leds[led].b > 0) {
+        anyLightsOn = true;
+        break;
+      } else {
+        drank=0;
+      }
+    }
+
+    //previously accomplished as follows...
+    //if(drank==2&&leds[0].r>0){
+    if(drank==2&&anyLightsOn){
+      for (int led = 0; led < NUM_LEDS; led++) {
+        //float brightnessPercent = (float)led/NUM_LEDS;
+        leds[led].r = max(leds[led].r-4,0);
+        leds[led].g = max(leds[led].g-4,0);
+        leds[led].b = max(leds[led].b-4,0);
+      }
+      /*
       if(leds[0].r==0){
         drank=0;
       }
+      */
     }
   }
 //pin 2 - the waiter's release
@@ -269,8 +290,10 @@ void loop(void)
       waiter = 1;
     }
     if((waiter == 1) && (count==0)){
-      leds[0].r = min(leds[0].r+4,255);
-      leds[0].b = min(leds[0].b+8,255);
+      for (int led = 0; led < NUM_LEDS; led++) {
+        leds[led].r = min(leds[led].r+4,255);
+        leds[led].b = min(leds[led].b+8,255);
+      }
       if(leds[0].b >= 255){
         waiter = 2;
       }
@@ -278,8 +301,10 @@ void loop(void)
     if(waiter == 2){
       slow++;
       if(slow == 10){
-        leds[0].r = max(leds[0].r-1,0);
-        leds[0].b = max(leds[0].b-2,0);
+        for (int led = 0; led < NUM_LEDS; led++) {
+          leds[led].r = max(leds[led].r-1,0);
+          leds[led].b = max(leds[led].b-2,0);
+        }
         if(leds[0].b <= 0){
           waiter=0;
         }
@@ -301,17 +326,18 @@ void loop(void)
     delay(1);
     digitalWrite(CE, LOW);
   }
-//  nrfWrite(7, 0x20);
-//  nrfRead(7, 1);
-//  nrfFillTx(test,4);
-//  nrfRead(0x17, 1);
-//  nrfRead(OBSERVE_TX,1);
-//  digitalWrite(CE, HIGH);
-//  delay(1);
-//  digitalWrite(CE, LOW);
-//  nrfRead(0x17, 1);
-//  nrfRead(7, 1);
- delay(BNO055_SAMPLERATE_DELAY_MS/5);
+  //  nrfWrite(7, 0x20);
+  //  nrfRead(7, 1);
+  //  nrfFillTx(test,4);
+  //  nrfRead(0x17, 1);
+  //  nrfRead(OBSERVE_TX,1);
+  //  digitalWrite(CE, HIGH);
+  //  delay(1);
+  //  digitalWrite(CE, LOW);
+  //  nrfRead(0x17, 1);
+  //  nrfRead(7, 1);
+  delay(BNO055_SAMPLERATE_DELAY_MS/5);
+  delay(47);
 }
 
 void nrfFillTx(uint8_t data){
